@@ -1,9 +1,13 @@
+<?php
+include_once __DIR__ . '/../helpers/HSession.php';
+?>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contactos</title>
+    <link rel="icon" type="image/x-icon" href="public/favicon.ico">
     <!-- Styles links -->
     <link rel="stylesheet" href="public/styles/styles.css">
     <!-- Bulma CSS Framework -->
@@ -39,45 +43,57 @@
 
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
-                <a class="navbar-item" href="/dashboard ">
-                    Home
-                </a>
+                <?php
+                if (isset($_SESSION['id'])) {
+                    echo '<a class="navbar-item" href="/dashboard ">
+                        Home
+                    </a>';
+                }
+                ?>
+
 
                 <a class="navbar-item" href="/contacts">
                     Contacts
                 </a>
-
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        Utilities
-                    </a>
-
-                    <div class="navbar-dropdown">
-                        <a class="navbar-item" href="/departments">
-                            Departments
+                <?php
+                if (isset($_SESSION['id'])) {
+                    echo '<div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            Utilities
                         </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item" href="/report">
-                            Report an issue
-                        </a>
-                    </div>
-                </div>
+
+                        <div class="navbar-dropdown">
+                            <a class="navbar-item" href="/departments">
+                                Departments
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="/report">
+                                Report an issue
+                            </a>
+                        </div>
+                    </div>';
+                }
+                ?>
+
             </div>
 
             <div class="navbar-end">
-                <div class="navbar-item">
-                    <div class="buttons">
-                        <a class="button is-light" href="/login">
-                            Log out
-                        </a>
-                    </div>
-                </div>
+                <?php
+                if (isset($_SESSION['id'])) {
+                    echo '<a class="navbar-item" href="/dashboard">
+                        <span class="icon is-small">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <span>' . $_SESSION['person_name'] . '</span>
+                    </a>';
+                }
+                ?>
             </div>
         </div>
     </nav>
 
     <!-- projects scripts -->
-    <script src="public/js/script.js"></script>
+    <script src="public/js/scripts.js"></script>
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
