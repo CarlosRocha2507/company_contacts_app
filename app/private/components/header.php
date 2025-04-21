@@ -50,8 +50,6 @@ include_once __DIR__ . '/../helpers/HSession.php';
                     </a>';
                 }
                 ?>
-
-
                 <a class="navbar-item" href="/contacts">
                     Contacts
                 </a>
@@ -74,7 +72,6 @@ include_once __DIR__ . '/../helpers/HSession.php';
                     </div>';
                 }
                 ?>
-
             </div>
 
             <div class="navbar-end">

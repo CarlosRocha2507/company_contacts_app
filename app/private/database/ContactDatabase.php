@@ -57,4 +57,61 @@ class ContactDatabase
             die("ERROR:" . $e->getMessage() . " ON FILE: " . $e->getFile() . " ON LINE: " . $e->getLine());
         }
     }
+    public function getDepartments()
+    {
+        try {
+            $conn = $this->mysqlConnection();
+            $stmt = $conn->prepare("SELECT * FROM App_Departments WHERE 1=1 AND is_active = 1;");
+            $stmt->execute();
+            if ($stmt->rowCount() > 0) {
+                return $stmt->fetchAll(PDO::FETCH_ASSOC);
+            }
+            return null;
+        } catch (PDOException $e) {
+            die("ERROR:" . $e->getMessage() . " ON FILE: " . $e->getFile() . " ON LINE: " . $e->getLine());
+        }
+    }
+    public function createDepartment($department_name)
+    {
+        try {
+            $conn = $this->mysqlConnection();
+            $stmt = $conn->prepare("INSERT INTO App_Departments (department) VALUES (:department_name)");
+            $stmt->bindParam(':department_name', $department_name);
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die("ERROR:" . $e->getMessage() . " ON FILE: " . $e->getFile() . " ON LINE: " . $e->getLine());
+        }
+    }
+    public function updateDepartment($department_id, $department_name)
+    {
+        try {
+            $conn = $this->mysqlConnection();
+            $stmt = $conn->prepare("UPDATE App_Departments SET department_name = :department_name WHERE department_id = :department_id");
+            $stmt->bindParam(':department_name', $department_name);
+            $stmt->bindParam(':department_id', $department_id);
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die("ERROR:" . $e->getMessage() . " ON FILE: " . $e->getFile() . " ON LINE: " . $e->getLine());
+        }
+    }
+    public function deleteDepartment($department_id)
+    {
+        try {
+            $conn = $this->mysqlConnection();
+            $stmt = $conn->prepare("DELETE FROM App_Departments WHERE department_id = :department_id");
+            $stmt->bindParam(':department_id', $department_id);
+            if ($stmt->execute()) {
+                return true;
+            }
+            return false;
+        } catch (PDOException $e) {
+            die("ERROR:" . $e->getMessage() . " ON FILE: " . $e->getFile() . " ON LINE: " . $e->getLine());
+        }
+    }
 }

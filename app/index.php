@@ -54,9 +54,64 @@ switch ($request) {
         header('Location: /register?status=error');
         exit();
     case 'dashboard':
+        require __DIR__ . '/public/views/dashboard.php';
         break;
+    case 'department':
+        require __DIR__ . '/public/views/department.php';
+        break;
+    case 'create-department':
+        if ($method == 'POST') {
+            include_once __DIR__ . '/private/services/DepartmentService.php';
+            if (isset($_POST['department_name'])) {
+                $department_name = $_POST['department_name'];
+                $create = DepartmentService::createDepartment($department_name);
+                if ($create) {
+                    echo json_encode(array("status" => "success", "message" => "Department created successfully."));
+                    exit();
+                } else {
+                    echo json_encode(array("status" => "error", "message" => "Error creating department."));
+                    exit();
+                }
+            }
+        }
+        echo json_encode(array("status" => "error", "message" => "Invalid request."));
+        exit();
+    case 'update-department':
+        if ($method == 'POST') {
+            include_once __DIR__ . '/private/services/DepartmentService.php';
+            if (isset($_POST['department_id']) && isset($_POST['department_name'])) {
+                $department_id = $_POST['department_id'];
+                $department_name = $_POST['department_name'];
+                $update = DepartmentService::updateDepartment($department_id, $department_name);
+                if ($update) {
+                    echo json_encode(array("status" => "success", "message" => "Department updated successfully."));
+                    exit();
+                }else{
+                    echo json_encode(array("status" => "error", "message" => "Error updating department."));
+                    exit();
+                }
+            }
+        }
+        echo json_encode(array("status" => "error", "message" => "Invalid request."));
+        exit();
+    case 'delete-department':
+        if ($method == 'POST') {
+            include_once __DIR__ . '/private/services/DepartmentService.php';
+            if (isset($_POST['department_id'])) {
+                $department_id = $_POST['department_id'];
+                $delete = DepartmentService::deleteDepartment($department_id);
+                if ($delete) {
+                    echo json_encode(array("status" => "success", "message" => "Department deleted successfully."));
+                    exit();
+                }else{
+                    echo json_encode(array("status" => "error", "message" => "Error deleting department."));
+                    exit();
+                }
+            }
+        }
+        echo json_encode(array("status" => "error", "message" => "Invalid request."));
+        exit();
     default:
-        echo "aqui";
         http_response_code(404);
         require __DIR__ . '/public/views/404.php';
         break;
