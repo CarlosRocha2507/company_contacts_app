@@ -1,5 +1,26 @@
+/**
+ * Asynchronously creates a new department by sending a POST request to the server.
+ * 
+ * This function collects the department name, code, and extensions from the DOM,
+ * validates the input, and sends the data to the server. It handles both success
+ * and error responses, displaying appropriate alerts and reloading the page upon success.
+ * 
+ * @async
+ * @function createDepartment
+ * @returns {void}
+ * 
+ * @throws {Error} Displays an error alert if the request fails or if required fields are missing.
+ * 
+ * @example
+ * // Trigger the function when a form is submitted
+ * $("#createDepartmentForm").on("submit", function (e) {
+ *     e.preventDefault();
+ *     createDepartment();
+ * });
+ */
 async function createDepartment() {
     let department_name = $("#department_name").val();
+    let department_code = $("#department_code").val();
     let department_extensions = [];
     $("#extensions_list li").each(function () {
         department_extensions.push($(this).attr("value").trim());
@@ -18,17 +39,18 @@ async function createDepartment() {
         dataType: 'json',
         data: {
             department_name: department_name,
+            department_code: department_code,
             department_extensions: department_extensions
         },
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
         success: function (response) {
-            console.log(response);
             loadingHandler(null, 0);
             if (response.status !== 'success') {
                 showAlert(response.message || "An error occurred while creating the department.", "Error", "error");
                 return;
             }
             showAlert("Department created successfully!", "Success", "success");
+            window.location.reload(); 
         },
         error: function (xhr, status, error) {
             console.error("Error details:", {
@@ -43,9 +65,24 @@ async function createDepartment() {
         }
     });
 }
+/**
+ * Deletes a department by its ID after user confirmation.
+ * Displays a confirmation alert, handles loading state, and sends an AJAX request to delete the department.
+ * Provides feedback to the user based on the success or failure of the operation.
+ *
+ * @async
+ * @function deleteDepartment
+ * @param {number|string} department_id - The unique identifier of the department to be deleted.
+ * @returns {Promise<void>} Resolves when the operation is complete.
+ *
+ * @throws {Error} Logs error details to the console if the AJAX request fails.
+ *
+ * @example
+ * // Call the function to delete a department with ID 123
+ * deleteDepartment(123);
+ */
 async function deleteDepartment(department_id) {
     if (await showQuestionAlert("Are you sure?", "Delete Department", "warning")) {
-        console.log("Deleting department..." + department_id);
         loadingHandler("Deleting department...", 1);
         $.ajax({
             url: 'delete-department',
@@ -54,13 +91,13 @@ async function deleteDepartment(department_id) {
             data: { department_id: department_id },
             headers: { 'X-Requested-With': 'XMLHttpRequest' },
             success: function (response) {
-                console.log(response);
                 loadingHandler(null, 0);
                 if (response.status !== 'success') {
                     showAlert(response.message || "An error occurred while deleting the department.", "Error", "error");
                     return;
                 }
                 showAlert("Department deleted successfully!", "Success", "success");
+                window.location.reload();
             },
             error: function (xhr, status, error) {
                 console.error("Error details:", {
@@ -77,8 +114,17 @@ async function deleteDepartment(department_id) {
 
     }
 }
-function updateModal(department_id, department_name, department_extensions) {
+/**
+ * Updates the modal with the provided department details and prepares it for editing.
+ *
+ * @param {number} department_id - The unique identifier of the department.
+ * @param {string} department_name - The name of the department.
+ * @param {string} department_code - The code associated with the department.
+ * @param {string} department_extensions - A comma-separated string of department extensions.
+ */
+function updateModal(department_id, department_name, department_code, department_extensions) {
     $("#department_name").val(department_name);
+    $("#department_code").val(department_code);
     if (isEmpty(department_extensions)) {
         $("#extensions_list").empty();
     } else {
@@ -99,18 +145,45 @@ function updateModal(department_id, department_name, department_extensions) {
     $("#department_save").attr("onclick", "updateDepartment(" + department_id + ", '" + department_name + "', '" + department_extensions + "')").text("Update");
 }
 
+/**
+ * Resets and prepares the modal for creating a new department.
+ * Clears the input fields for department name and code, empties the extensions list,
+ * and updates the save button to trigger the `createDepartment` function with the label "Create".
+ */
 function createModal() {
     $("#department_name").val("");
+    $("#department_code").val("");
+    $("#extensions_list").empty();
     $("#department_save").attr("onclick", "createDepartment()").text("Create");
 }
 
+/**
+ * Updates the details of a department by sending an AJAX POST request to the server.
+ *
+ * @async
+ * @function updateDepartment
+ * @param {number|string} department_id - The unique identifier of the department to be updated.
+ * @description This function collects the department's updated name, code, and extensions from the DOM,
+ *              sends the data to the server, and handles the response. It displays appropriate messages
+ *              based on the success or failure of the operation.
+ *
+ * @example
+ * // Call the function to update a department with ID 123
+ * updateDepartment(123);
+ *
+ * @requires jQuery
+ * @requires loadingHandler - A function to handle loading states.
+ * @requires showAlert - A function to display alert messages to the user.
+ *
+ * @throws Will log an error to the console if the AJAX request fails.
+ */
 async function updateDepartment(department_id) {
     let department_name = $("#department_name").val();
+    let department_code = $("#department_code").val();
     let department_extensions = [];
     $("#extensions_list li").each(function () {
         department_extensions.push($(this).attr("value").trim());
     });
-
 
     loadingHandler("Updating department...", 1);
     $.ajax({
@@ -120,6 +193,7 @@ async function updateDepartment(department_id) {
         data: {
             department_id: department_id,
             department_name: department_name,
+            department_code: department_code,
             department_extensions: department_extensions
         },
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -131,6 +205,7 @@ async function updateDepartment(department_id) {
                 return;
             }
             showAlert("Department updated successfully!", "Success", "success");
+            window.location.reload(); 
         },
         error: function (xhr, status, error) {
             console.error("Error details:", {
@@ -145,7 +220,16 @@ async function updateDepartment(department_id) {
         }
     });
 }
-
+/**
+ * Adds a department extension to the extensions list if it is valid and not already present.
+ * 
+ * This function retrieves the value from the department extension input field, validates it,
+ * checks for duplicates in the existing extensions list, and appends it to the list if valid.
+ * It also clears the input field after adding the extension.
+ * 
+ * @function
+ * @throws Will display an alert if the extension input is empty or if the extension already exists in the list.
+ */
 function setExtensionList() {
     let department_extension = $("#department_extension").val();
     if (isEmpty(department_extension)) {

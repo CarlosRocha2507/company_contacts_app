@@ -7,7 +7,7 @@ function getFilter($filter_title, $filters)
                 <h2 class='title is-5'>{$filter_title}</h2>
                 <div class='field has-addons'>
                     <div class='control'>
-                        <input class='input' type='text' placeholder='Pesquise por algo...'>
+                        <input class='input' type='text' placeholder='Search for something...'>
                     </div>
                     <div class='control'>
                         <a class='button is-info' style='height: 100%;'>
@@ -16,9 +16,6 @@ function getFilter($filter_title, $filters)
                     </div>
                 </div>
                     {$filters}
-                <div class='control'>
-                    <button class='button is-primary'>Aplicar Filtros</button>
-                </div>
                 </div>
             </div>
             </div>";

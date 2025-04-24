@@ -132,13 +132,13 @@ function generateTaleWithFilter($title, $filters, $header_button, $head, $rows)
             </div>
             </div>
         </section>
-        <div class='columns'>
+        <div class='columns' style='height: 100%;'>
     <div class='column is-one-quarter'>
                 <div class='box'>
-                    <h2 class='title is-5'>Filtros</h2>
+                    <h2 class='title is-5'>Filters</h2>
                     <div class='field has-addons'>
                         <div class='control' style='flex: 1;'>
-                            <input class='input' id='searchInput' type='text' placeholder='Pesquise por algo...' style='width: 100%;'>
+                            <input class='input' id='searchInput' type='text' placeholder='Search for something...' style='width: 100%;'>
                         </div>
                         <div class='control'>
                             <a class='button is-info' style='height: 100%;'>
@@ -149,7 +149,8 @@ function generateTaleWithFilter($title, $filters, $header_button, $head, $rows)
                     {$filters}
                     <div class='field' style='margin-top: 2%;'>
                     <div class='control'>
-                        <button class='button is-primary' onclick='applyFilter();'>Aplicar Filtros</button>
+                        <button class='button is-primary' onclick='applyFilter();'>Apply filters</button>
+                        <button class='button is-danger' onclick='clearFilters();'>Clear filters</button>
                     </div>
                     </div>
                 </div>
@@ -177,12 +178,71 @@ function generateTaleWithFilter($title, $filters, $header_button, $head, $rows)
                         </tbody>
                         </table>
                     </div>
+                    <div class='notification'>
+                        <div class='level'>
+                        <div class='level-left'>
+                            <div class='level-item'>
+                              <div id='pagination-controls' class='buttons has-addons'></div>
+                            </div>
+                        </div>
+                        <div class='level-right'>
+                            <div class='level-item' id='pagination-level'>
+                            <small>Page 1 of 3</small>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
                 </div>
             </div>
             </div>
-        </div>";
+        </div>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Pagination logic
+                let rowsPerPage = 6; // Number of rows per page
+                let table = document.querySelector('table tbody');
+                let rows = table.querySelectorAll('tr');
+                let totalRows = rows.length;
+                let totalPages = Math.ceil(totalRows / rowsPerPage);
+                let currentPage = 1;
+
+                // Show the actual page to user
+                function showPage(page) {
+                    let start = (page - 1) * rowsPerPage;
+                    let end = start + rowsPerPage;
+
+                    rows.forEach((row, index) => {
+                        row.style.display = (index >= start && index < end) ? 'table-row' : 'none';
+                    });
+
+                    document.querySelector('#pagination-level small').innerText = 'Page ' + page + ' of ' + totalPages;
+                }
+
+                // Create pagination buttons
+                function createPagination() {
+                    let paginationDiv = document.querySelector('#pagination-controls');
+                    paginationDiv.innerHTML = '';
+
+                    for (let i = 1; i <= totalPages; i++) {
+                        let button = document.createElement('button');
+                        button.classList.add('button');
+                        button.innerText = i;
+                        button.addEventListener('click', function() {
+                            currentPage = i;
+                            showPage(currentPage);
+                        });
+
+                        paginationDiv.appendChild(button);
+                    }
+                }
+
+                // Create buttons and show the first page
+                createPagination();
+                showPage(currentPage);
+            });
+            </script>";
     return $table;
 }
 

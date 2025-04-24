@@ -6,7 +6,9 @@ if (!HSession::isLoggedIn()) {
     header("Location: /");
     exit();
 }
+echo "<div id='contacts'>";
 echo ContactsService::getContacts();
+echo "</div>";
 echo ContactsService::getContactModal();
 ?>
 <script src="public/js/contacts.js"></script>
