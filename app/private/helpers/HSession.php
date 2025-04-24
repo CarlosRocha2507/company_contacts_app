@@ -28,6 +28,10 @@ class HSession
     }
     public static function isLoggedIn()
     {
-        return isset($_SESSION['user_id']);
+        return isset($_SESSION['id']);
+    }
+    public static function isNotLoginPage()
+    {
+        return $_SERVER['REQUEST_URI'] != '/login' && $_SERVER['REQUEST_URI'] != '/register' && $_SERVER['REQUEST_URI'] != '/' && $_SERVER['REQUEST_URI'] != '/contacts';
     }
 }

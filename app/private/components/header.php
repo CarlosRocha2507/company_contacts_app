@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ . '/../helpers/HSession.php';
+HSession::startSession();
 ?>
 <html lang="en">
 
@@ -44,17 +45,21 @@ include_once __DIR__ . '/../helpers/HSession.php';
         <div id="navbarBasicExample" class="navbar-menu">
             <div class="navbar-start">
                 <?php
-                if (isset($_SESSION['id'])) {
+                if (isset($_SESSION['id']) && HSession::isNotLoginPage()) {
                     echo '<a class="navbar-item" href="/dashboard ">
                         Home
+                    </a>
+                    <a class="navbar-item" href="/dashboard">
+                        Contacts
+                    </a>';
+                }else{
+                    echo '<a class="navbar-item" href="/contacts">
+                        Contacts
                     </a>';
                 }
                 ?>
-                <a class="navbar-item" href="/contacts">
-                    Contacts
-                </a>
                 <?php
-                if (isset($_SESSION['id'])) {
+                if (isset($_SESSION['id']) && HSession::isNotLoginPage()) {
                     echo '<div class="navbar-item has-dropdown is-hoverable">
                         <a class="navbar-link">
                             Utilities
@@ -76,13 +81,25 @@ include_once __DIR__ . '/../helpers/HSession.php';
 
             <div class="navbar-end">
                 <?php
-                if (isset($_SESSION['id'])) {
-                    echo '<a class="navbar-item" href="/dashboard">
-                        <span class="icon is-small">
-                            <i class="fas fa-user"></i>
-                        </span>
-                        <span>' . $_SESSION['person_name'] . '</span>
-                    </a>';
+                if (isset($_SESSION['id']) && HSession::isNotLoginPage()) {
+                    echo '<div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            <span class="icon is-small">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>' . $_SESSION['person_name'] . '</span>
+                        </a>
+                        <div class="navbar-dropdown is-right">
+                            <a class="navbar-item" href="/profile">
+                                Profile
+                            </a>
+                            <hr class="navbar-divider">
+                            <a class="navbar-item" href="/logout">
+                                Logout
+                               <i class="fa-solid fa-right-from-bracket"></i>
+                            </a>
+                        </div>
+                    </div>';
                 }
                 ?>
             </div>
