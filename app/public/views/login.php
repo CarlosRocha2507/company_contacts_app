@@ -1,3 +1,13 @@
+<?php
+if (isset($_GET["status"])) {
+    if ($_GET["status"] == "error") {
+        echo '<div class="notification is-danger">
+            <button class="delete"></button>
+            Error during login. Please try again.
+            </div>';
+    }
+}
+?>
 <section class="hero is-fullheight">
     <div class="hero-body">
         <div class="container">
@@ -10,8 +20,7 @@
                         <div class="field">
                             <label class="label">Username</label>
                             <div class="control has-icons-left has-icons-right">
-                                <input class="input is-success" type="text" name="user_name" placeholder="Username"
-                                    required>
+                                <input class="input" type="text" name="user_name" placeholder="Username" required>
                                 <span class="icon is-small is-left">
                                     <i class="fas fa-user"></i>
                                 </span>
@@ -21,14 +30,13 @@
                             <label for="" class="label">Password</label>
                             <div class='field has-addons'>
                                 <div class="control has-icons-left" style='width: 100%;'>
-                                    <input type="password" id="password" name="user_password" placeholder="*******" class="input"
-                                        required>
+                                    <input type="password" id="password" name="user_password" placeholder="*******"
+                                        class="input" required>
                                     <span class="icon is-small is-left">
                                         <i class="fa fa-lock"></i>
                                     </span>
                                 </div>
-                                <div class='control'
-                                    onclick="showPasswordFieldText('password', 'password_icon_field');"
+                                <div class='control' onclick="showPasswordFieldText('password', 'password_icon_field');"
                                     style='width: 50px;'>
                                     <a class='button is-info' style='height: 100%;'>
                                         <i id='password_icon_field' class='fa-solid fa-eye-slash'></i>
@@ -58,3 +66,15 @@
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+            const $notification = $delete.parentNode;
+
+            $delete.addEventListener('click', () => {
+                $notification.parentNode.removeChild($notification);
+            });
+        });
+    });
+</script>

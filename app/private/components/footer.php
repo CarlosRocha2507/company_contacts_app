@@ -9,6 +9,7 @@
         bottom: 0;
         width: 100%;
         padding: 1rem 0;
+        position: relative;
     }
 </style>
 <footer class="footer">

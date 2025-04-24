@@ -1,6 +1,7 @@
 <?php
 
-function generateModal($modal_id, $title, $content, $buttons) {
+function generateModal($modal_id, $title, $content, $buttons)
+{
     $modal = "
     <div id='{$modal_id}' class='modal'>
     <div class='modal-background'></div>
@@ -22,8 +23,7 @@ function generateModal($modal_id, $title, $content, $buttons) {
     ";
     $modal .= '
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-        // Functions to open and close a modal
+    document.addEventListener("DOMContentLoaded", () => {
         function openModal($el) {
             $el.classList.add("is-active");
         }
@@ -33,38 +33,38 @@ function generateModal($modal_id, $title, $content, $buttons) {
         }
 
         function closeAllModals() {
-            (document.querySelectorAll(".modal") || []).forEach(($modal) => {
-            closeModal($modal);
+            document.querySelectorAll(".modal").forEach(($modal) => {
+                closeModal($modal);
             });
         }
 
-        // Add a click event on buttons to open a specific modal
-        (document.querySelectorAll(".js-modal-trigger") || []).forEach(($trigger) => {
-            const modal = $trigger.dataset.target;
-            const $target = document.getElementById(modal);
-
-            $trigger.addEventListener("click", () => {
-            openModal($target);
-            });
-        });
-
-        // Add a click event on various child elements to close the parent modal
-        (document.querySelectorAll(".modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button") || []).forEach(($close) => {
-            const $target = $close.closest(".modal");
-
-            $close.addEventListener("click", () => {
-            closeModal($target);
-            });
-        });
-
-        // Add a keyboard event to close all modals
-        document.addEventListener("keydown", (event) => {
-            if(event.key === "Escape") {
-            closeAllModals();
+        document.addEventListener("click", (event) => {
+            const $trigger = event.target.closest(".js-modal-trigger");
+            if ($trigger) {
+                const modalId = $trigger.dataset.target;
+                const $target = document.getElementById(modalId);
+                if ($target) openModal($target);
             }
         });
+
+        document.addEventListener("click", (event) => {
+            if (
+                event.target.matches(".modal-background") ||
+                event.target.matches(".modal-close") ||
+                event.target.closest(".modal-card-head .delete") ||
+                event.target.closest(".modal-card-foot .button")
+            ) {
+                const $modal = event.target.closest(".modal");
+                if ($modal) closeModal($modal);
+            }
         });
-    </script>
-    ';
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                closeAllModals();
+            }
+        });
+    });
+    </script>';
     return $modal;
 }
